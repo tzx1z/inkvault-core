@@ -8,13 +8,13 @@
 //   node vault.mjs foreign - заменяет учетную запись новой с MASTER_PASSWORD и удаляет записи (чужая учетная запись)
 //   node vault.mjs key-id - выводит отпечаток учетной записи на сервере
 //   node vault.mjs max-items [N] - выводит лимит записей узла хранилища, с N - меняет его
-// Мастер-пароль задается переменной MASTER_PASSWORD. Нужна сборка WASM для Node: bindings/build.sh wasm.
+// Мастер-пароль задается переменной MASTER_PASSWORD. В checkout ядра нужна сборка WASM для Node: bindings/build.sh wasm.
 import { client, xml } from "@xmpp/client";
 import { createRequire } from "node:module";
 import { PepAdapter, fetchAccount, publishAccount } from "./pep-adapter.mjs";
 
 const require = createRequire(import.meta.url);
-const core = require("../../bindings/wasm/pkg/node/inkvault_wasm.js");
+const core = require("@inkov-dev/inkvault-core-wasm/node");
 
 const SERVICE = "ws://127.0.0.1:15280/xmpp-websocket";
 const NS_VAULT = "urn:inkvault:vault:0";

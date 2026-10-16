@@ -1,0 +1,31 @@
+{
+  "name": "@inkov-dev/inkvault-core-wasm",
+  "version": "0.0.0",
+  "description": "Ядро InkVault в WebAssembly для браузера и Node",
+  "license": "AGPL-3.0-only",
+  "author": {
+    "name": "Evgeny Inkov",
+    "email": "me@inkov.dev",
+    "url": "https://inkov.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tzx1z/inkvault-core.git",
+    "directory": "bindings/wasm"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./pkg/web/inkvault_wasm.d.ts",
+      "default": "./pkg/web/inkvault_wasm.js"
+    },
+    "./node": {
+      "types": "./pkg/node/inkvault_wasm.d.ts",
+      "default": "./pkg/node/inkvault_wasm.js"
+    }
+  },
+  "files": [
+    "pkg/web/",
+    "pkg/node/"
+  ]
+}

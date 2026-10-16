@@ -1,6 +1,6 @@
 {
-  "name": "inkvault-testkit-vault",
-  "private": true,
+  "name": "@inkov-dev/inkvault-testkit",
+  "version": "0.0.0",
   "description": "Тестовое хранилище InkVault на тестовом Prosody для сквозных проверок клиентов",
   "license": "AGPL-3.0-only",
   "author": {
@@ -8,8 +8,22 @@
     "email": "me@inkov.dev",
     "url": "https://inkov.dev"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tzx1z/inkvault-core.git",
+    "directory": "testkit/vault"
+  },
   "type": "module",
+  "exports": {
+    "./vault.mjs": "./vault.mjs",
+    "./pep-adapter.mjs": "./pep-adapter.mjs"
+  },
+  "files": [
+    "vault.mjs",
+    "pep-adapter.mjs"
+  ],
   "dependencies": {
+    "@inkov-dev/inkvault-core-wasm": "file:../../bindings/wasm",
     "@xmpp/client": "0.14.0"
   }
 }

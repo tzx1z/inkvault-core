@@ -2,6 +2,7 @@ target/
 node_modules/
 .gradle/
 build/
+local.properties
 bindings/wasm/pkg/
 bindings/uniffi/kotlin/
 bindings/uniffi/jniLibs/

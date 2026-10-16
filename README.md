@@ -24,6 +24,7 @@ The core does no networking. It takes the data a client has received from the se
 | `core/` | `inkvault-core` crate |
 | `bindings/wasm/` | WebAssembly build (wasm-bindgen) for browsers and Node |
 | `bindings/uniffi/` | Kotlin bindings (UniFFI) for Android and JVM |
+| `bindings/uniffi/android/` | Gradle project that packages the Kotlin bindings and libraries as an AAR |
 | `bindings/build.sh` | build script for all targets |
 | `testkit/` | local Prosody image and a Node tool that creates a test vault, for client end-to-end tests |
 | `tools/licenses.py` | dependency license check |
@@ -37,6 +38,7 @@ bindings/build.sh              # core tests and all targets
 bindings/build.sh wasm         # bindings/wasm/pkg/{web,node}
 bindings/build.sh jvm          # bindings/uniffi/kotlin and target/release/libinkvault_uniffi.so
 bindings/build.sh android      # bindings/uniffi/kotlin and bindings/uniffi/jniLibs (arm64-v8a, x86_64)
+(cd bindings/uniffi/android && ./gradlew assembleRelease)   # AAR, after the android target
 ```
 
 ## Usage
@@ -45,8 +47,10 @@ Rust:
 
 ```toml
 [dependencies]
-inkvault-core = { git = "https://github.com/tzx1z/inkvault-core.git", tag = "v0.2.0" }
+inkvault-core = { git = "https://github.com/tzx1z/inkvault-core.git", tag = "v0.2.1" }
 ```
+
+Each [release](https://github.com/tzx1z/inkvault-core/releases) also includes the WebAssembly npm package (`inkvault-core-wasm-<version>.tgz`, browser build by default, Node build as `@inkov-dev/inkvault-core-wasm/node`) and the Android library (`inkvault-core-android-<version>.aar`, requires `net.java.dev.jna:jna:5.19.1@aar`).
 
 Entry points are `Account`, `UnlockedAccount` and `SyncEngine`. WebAssembly and Kotlin expose the same API as `VaultAccount`, `VaultSync` and `VaultClock`; the sync engine returns JSON with commands for the server and events for the UI.
 

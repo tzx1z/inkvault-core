@@ -23,7 +23,7 @@ kotlin() {
 for target in ${*:-test wasm jvm android}; do
     case $target in
     test)
-        cargo test -q -p inkvault-core
+        cargo test -q -p inkvault-core --features vectors
         ;;
     wasm)
         # профиль wasm: размер вместо скорости, кроме Argon2 и BLAKE2 (Cargo.toml)

@@ -3,7 +3,7 @@ resolver = "3"
 members = ["core", "bindings/wasm", "bindings/uniffi"]
 
 [workspace.package]
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Evgeny Inkov <me@inkov.dev>"]
 edition = "2024"
 license = "AGPL-3.0-only"

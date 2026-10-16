@@ -421,7 +421,7 @@ dependencies = [
 
 [[package]]
 name = "inkvault-core"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "argon2",
  "base64",
@@ -438,7 +438,7 @@ dependencies = [
 
 [[package]]
 name = "inkvault-uniffi"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "inkvault-core",
  "uniffi",
@@ -446,7 +446,7 @@ dependencies = [
 
 [[package]]
 name = "inkvault-wasm"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "inkvault-core",
  "wasm-bindgen",
