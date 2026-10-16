@@ -1,0 +1,32 @@
+[workspace]
+resolver = "3"
+members = ["core", "bindings/wasm", "bindings/uniffi"]
+
+[workspace.package]
+version = "0.2.0"
+authors = ["Evgeny Inkov <me@inkov.dev>"]
+edition = "2024"
+license = "AGPL-3.0-only"
+rust-version = "1.85"
+repository = "https://github.com/tzx1z/inkvault-core"
+homepage = "https://inkov.dev"
+
+# Argon2 без оптимизаций работает в десятки раз медленнее, тесты с реальными параметрами не дождаться
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+
+# WASM: размер важнее скорости, кроме Argon2 и BLAKE2 - от них зависит время разблокировки
+[profile.wasm]
+inherits = "release"
+opt-level = "z"
+
+[profile.wasm.package.argon2]
+opt-level = 3
+
+[profile.wasm.package.blake2]
+opt-level = 3

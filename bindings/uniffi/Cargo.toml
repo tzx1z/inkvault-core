@@ -1,0 +1,27 @@
+[package]
+name = "inkvault-uniffi"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Kotlin-биндинги ядра InkVault через UniFFI"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "inkvault_uniffi"
+
+[[bin]]
+name = "uniffi-bindgen"
+path = "src/bin/uniffi-bindgen.rs"
+required-features = ["cli"]
+
+[features]
+# Генератор биндингов нужен только на машине разработчика, в сборку для Android он не входит
+cli = ["uniffi/cli"]
+
+[dependencies]
+inkvault-core = { path = "../../core" }
+uniffi = "0.32"

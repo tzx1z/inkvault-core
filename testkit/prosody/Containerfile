@@ -1,0 +1,17 @@
+FROM registry.fedoraproject.org/fedora:44
+RUN dnf -y install prosody lua-dbi tar gzip && dnf clean all
+
+# SASL2, Bind 2, SM внутри входа и FAST - сторонние модули из prosody-modules, ревизия зафиксирована
+ARG MODULES_REV=9503fcbf014f
+RUN mkdir /tmp/pm \
+ && curl -fsSL "https://hg.prosody.im/prosody-modules/archive/${MODULES_REV}.tar.gz" | tar -xz -C /tmp/pm --strip-components=1 \
+ && install -d /usr/local/lib/prosody/modules \
+ && for m in mod_sasl2 mod_sasl2_bind2 mod_sasl2_sm mod_sasl2_fast; do cp -r /tmp/pm/$m /usr/local/lib/prosody/modules/; done \
+ && rm -rf /tmp/pm
+
+COPY prosody.cfg.lua /etc/prosody/prosody.cfg.lua
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
+USER prosody
+EXPOSE 5222 5280
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

@@ -1,0 +1,8 @@
+target/
+node_modules/
+.gradle/
+build/
+bindings/wasm/pkg/
+bindings/uniffi/kotlin/
+bindings/uniffi/jniLibs/
+.kotlin/
