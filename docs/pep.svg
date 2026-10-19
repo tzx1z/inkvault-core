@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:lang="en" width="960" height="936" viewBox="0 0 960 936">
+  <title>What PEP is and how InkVault uses it</title>
+  <desc>PEP nodes of an XMPP account on the server, three devices at different steps of working with them, the client workflow, why PEP is used and what data the server sees.</desc>
+  <style>
+    :root {
+      --bg: #ffffff; --panel: #f6f8fa; --card: #ffffff; --line: #d1d9e0;
+      --fg: #1f2328; --muted: #59636e; --net: #0969da;
+      --enc: #e2f4e7; --enc-line: #2b8a48;
+      --open: #edf0f4; --open-line: #8c959f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117; --panel: #151b23; --card: #0d1117; --line: #3d444d;
+        --fg: #e6edf3; --muted: #9198a1; --net: #4493f8;
+        --enc: #0f2e1b; --enc-line: #45b464;
+        --open: #212830; --open-line: #7d8590;
+      }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; font-size: 13px; fill: var(--fg); }
+    .m { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 12px; }
+    .h1 { font-size: 22px; font-weight: 700; }
+    .h2 { font-size: 16px; font-weight: 700; }
+    .h3 { font-size: 14px; font-weight: 600; }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .s { font-size: 12px; fill: var(--muted); }
+    .lead { font-size: 14px; fill: var(--muted); }
+    .c { text-anchor: middle; }
+    .bg { fill: var(--bg); stroke: var(--line); }
+    .panel { fill: var(--panel); stroke: var(--line); }
+    .card { fill: var(--card); stroke: var(--line); }
+    .enc { fill: var(--enc); stroke: var(--enc-line); }
+    .open { fill: var(--open); stroke: var(--open-line); }
+    .net { fill: none; stroke: var(--net); stroke-width: 1.6; }
+    .sep { stroke: var(--line); }
+    .ahn, .num, .dot { fill: var(--net); }
+    .numt { font-size: 12px; font-weight: 700; text-anchor: middle; fill: var(--bg); }
+  </style>
+  <defs>
+    <marker id="n" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="ahn" d="M0 0L10 5L0 10z"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0.5" y="0.5" width="959" height="935" rx="12"/>
+
+  <text class="h1" x="32" y="46">What PEP is and how InkVault uses it</text>
+  <text class="lead" x="32" y="72">PEP (Personal Eventing Protocol, XEP-0163) is a standard XMPP server feature. Every account has personal nodes:</text>
+  <text class="lead" x="32" y="92">the server stores the owner's data in them and tells the owner's devices about changes.</text>
+
+  <rect class="enc" x="32.5" y="111.5" width="14" height="14" rx="3"/>
+  <text x="54" y="123">encrypted on the device</text>
+  <rect class="open" x="260.5" y="111.5" width="14" height="14" rx="3"/>
+  <text x="282" y="123">visible to the server</text>
+  <path class="net" d="M430 118.5H462" marker-end="url(#n)"/>
+  <text x="472" y="123">XMPP transfer</text>
+  <circle class="num" cx="641" cy="118" r="9"/>
+  <text class="numt" x="641" y="122">1</text>
+  <text x="658" y="123">step, described below</text>
+
+  <!-- Схема -->
+  <rect class="panel" x="16.5" y="146.5" width="927" height="344" rx="10"/>
+  <text x="32" y="176"><tspan class="h2">How it works</tspan><tspan class="s" dx="10">one XMPP account, its nodes and your devices</tspan></text>
+
+  <rect class="card" x="290.5" y="196.5" width="380" height="280" rx="8"/>
+  <text class="h3" x="306" y="220">XMPP server</text>
+  <text class="s" x="306" y="238">for example, Prosody with the pep module</text>
+  <rect class="panel" x="306.5" y="252.5" width="348" height="212" rx="6"/>
+  <text x="320" y="274"><tspan class="b">Account</tspan> <tspan class="m">alice@example.org</tspan></text>
+  <text class="s" x="320" y="292">the nodes are open only to the owner</text>
+
+  <rect class="card" x="320.5" y="304.5" width="320" height="56" rx="6"/>
+  <text class="m b" x="334" y="325">urn:inkvault:account:0</text>
+  <text class="s" x="334" y="345">unlock data, the keys are encrypted</text>
+
+  <rect class="card" x="320.5" y="370.5" width="320" height="82" rx="6"/>
+  <text class="m b" x="334" y="391">urn:inkvault:vault:0</text>
+  <text class="s" x="334" y="409">your records: one record is one item</text>
+  <rect class="enc" x="334.5" y="420.5" width="64" height="20" rx="4"/>
+  <rect class="enc" x="404.5" y="420.5" width="64" height="20" rx="4"/>
+  <rect class="enc" x="474.5" y="420.5" width="64" height="20" rx="4"/>
+  <rect class="enc" x="544.5" y="420.5" width="64" height="20" rx="4"/>
+  <text class="sm c" x="366" y="435">record</text>
+  <text class="sm c" x="436" y="435">record</text>
+  <text class="sm c" x="506" y="435">record</text>
+  <text class="sm c" x="576" y="435">record</text>
+  <text class="b" x="618" y="435">…</text>
+
+  <rect class="card" x="32.5" y="206.5" width="170" height="80" rx="8"/>
+  <text class="h3" x="46" y="230">Phone</text>
+  <text class="s" x="46" y="248">Android client</text>
+  <text class="sm" x="46" y="272">changed a password</text>
+
+  <rect class="card" x="758.5" y="206.5" width="170" height="80" rx="8"/>
+  <text class="h3" x="772" y="230">Laptop</text>
+  <text class="s" x="772" y="248">terminal client</text>
+  <text class="sm" x="772" y="272">online</text>
+  <circle class="num" cx="906" cy="226" r="10"/>
+  <text class="numt" x="906" y="230">4</text>
+
+  <rect class="card" x="758.5" y="380.5" width="170" height="80" rx="8"/>
+  <text class="h3" x="772" y="404">Browser</text>
+  <text class="s" x="772" y="422">web client</text>
+  <text class="sm" x="772" y="446">was offline, signs in</text>
+  <circle class="num" cx="906" cy="400" r="10"/>
+  <text class="numt" x="906" y="404">4</text>
+
+  <path class="net" d="M203 246H289" marker-end="url(#n)"/>
+  <circle class="num" cx="246" cy="228" r="10"/>
+  <text class="numt" x="246" y="232">2</text>
+  <text class="m c" x="246" y="266">publish</text>
+
+  <path class="net" d="M671 246H757" marker-end="url(#n)"/>
+  <circle class="num" cx="714" cy="228" r="10"/>
+  <text class="numt" x="714" y="232">3</text>
+  <text class="s c" x="714" y="266">notification</text>
+
+  <path class="net" d="M672 420H757" marker-start="url(#n)" marker-end="url(#n)"/>
+  <circle class="num" cx="714" cy="402" r="10"/>
+  <text class="numt" x="714" y="406">1</text>
+  <text class="m c" x="714" y="440">fetch_all</text>
+
+  <!-- Шаги -->
+  <rect class="panel" x="16.5" y="506.5" width="927" height="172" rx="10"/>
+  <text class="h2" x="32" y="536">How the client works with PEP</text>
+
+  <rect class="card" x="32.5" y="552.5" width="212" height="112" rx="8"/>
+  <circle class="num" cx="54" cy="576" r="11"/>
+  <text class="numt" x="54" y="580">1</text>
+  <text class="b" x="74" y="581">Sign-in and load</text>
+  <text class="s" x="46" y="604">The client signs in with your</text>
+  <text class="s" x="46" y="620">JID, fetches all node items</text>
+  <text class="s" x="46" y="636">and merges them with the</text>
+  <text class="s" x="46" y="652">cache on the device.</text>
+
+  <rect class="card" x="260.5" y="552.5" width="212" height="112" rx="8"/>
+  <circle class="num" cx="282" cy="576" r="11"/>
+  <text class="numt" x="282" y="580">2</text>
+  <text class="b" x="302" y="581">Publish</text>
+  <text class="s" x="274" y="604">A changed record is encrypted</text>
+  <text class="s" x="274" y="620">on the device and published</text>
+  <text class="s" x="274" y="636">to the node whole, as one</text>
+  <text class="s" x="274" y="652">item.</text>
+
+  <rect class="card" x="488.5" y="552.5" width="212" height="112" rx="8"/>
+  <circle class="num" cx="510" cy="576" r="11"/>
+  <text class="numt" x="510" y="580">3</text>
+  <text class="b" x="530" y="581">Notification</text>
+  <text class="s" x="502" y="604">The server stores the item</text>
+  <text class="s" x="502" y="620">and sends it to those of</text>
+  <text class="s" x="502" y="636">your devices that are</text>
+  <text class="s" x="502" y="652">online right now.</text>
+
+  <rect class="card" x="716.5" y="552.5" width="212" height="112" rx="8"/>
+  <circle class="num" cx="738" cy="576" r="11"/>
+  <text class="numt" x="738" y="580">4</text>
+  <text class="b" x="758" y="581">Merge</text>
+  <text class="s" x="730" y="604">Each device merges versions</text>
+  <text class="s" x="730" y="620">field by field. The server</text>
+  <text class="s" x="730" y="636">does not read the data or</text>
+  <text class="s" x="730" y="652">resolve conflicts.</text>
+
+  <!-- Зачем PEP и что видит сервер -->
+  <rect class="panel" x="16.5" y="694.5" width="927" height="226" rx="10"/>
+  <text class="h3" x="32" y="724">Why InkVault uses PEP</text>
+  <circle class="dot" cx="38" cy="746" r="2.5"/>
+  <text x="50" y="750">No separate server: your XMPP server is enough.</text>
+  <circle class="dot" cx="38" cy="770" r="2.5"/>
+  <text x="50" y="774">No extra sign-up: the vault account is your JID.</text>
+  <circle class="dot" cx="38" cy="794" r="2.5"/>
+  <text x="50" y="798">Edits reach your devices right away, without polling the server.</text>
+  <circle class="dot" cx="38" cy="818" r="2.5"/>
+  <text x="50" y="822">Open XMPP standard, the protocol is tested on Prosody 13.</text>
+  <circle class="dot" cx="38" cy="842" r="2.5"/>
+  <text x="50" y="846">The nodes can be closed to everyone but the owner.</text>
+
+  <path class="sep" d="M480.5 712V862"/>
+
+  <text class="h3" x="496" y="724">What the server sees</text>
+  <text class="s" x="496" y="746">sees</text>
+  <text class="s" x="716" y="746">does not see</text>
+  <rect class="open" x="496.5" y="756.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="506" y="773">your JID and sign-in times</text>
+  <rect class="open" x="496.5" y="784.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="506" y="801">number and size of records</text>
+  <rect class="open" x="496.5" y="812.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="506" y="829">when records change</text>
+  <rect class="open" x="496.5" y="840.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="506" y="857">key salt and parameters</text>
+  <rect class="enc" x="716.5" y="756.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="726" y="773">passwords and usernames</text>
+  <rect class="enc" x="716.5" y="784.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="726" y="801">names, URLs, notes</text>
+  <rect class="enc" x="716.5" y="812.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="726" y="829">tags and TOTP secrets</text>
+  <rect class="enc" x="716.5" y="840.5" width="212" height="24" rx="5"/>
+  <text class="sm" x="726" y="857">master password and keys</text>
+
+  <path class="sep" d="M32 876.5H928"/>
+  <text class="s" x="32" y="896">By default the records node holds 256 items, trash included (<tspan class="m">pep_max_items</tspan> in Prosody).</text>
+  <text class="s" x="32" y="912">For larger vaults, the server sets <tspan class="m">pep_max_items = 10000</tspan>, and the client sets the node limit to 10000.</text>
+</svg>

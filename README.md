@@ -17,6 +17,16 @@ The core does no networking. It takes the data a client has received from the se
 - Password generator and TOTP codes (RFC 6238).
 - Error and warning messages in English and Russian, stable error codes for clients.
 
+## Overview
+
+![Password storage, exchange and encryption in InkVault](docs/scheme.svg)
+
+## What PEP is
+
+PEP (Personal Eventing Protocol, XEP-0163) is an XMPP server feature: every account has personal nodes where the server stores the owner's data and from which it sends changes to the owner's devices. InkVault keeps the vault account and the records in them.
+
+![What PEP is and how InkVault uses it](docs/pep.svg)
+
 ## Layout
 
 | Path | Contents |
@@ -27,6 +37,7 @@ The core does no networking. It takes the data a client has received from the se
 | `bindings/uniffi/android/` | Gradle project that packages the Kotlin bindings and libraries as an AAR |
 | `bindings/build.sh` | build script for all targets |
 | `testkit/` | local Prosody image and a Node tool that creates a test vault, for client end-to-end tests |
+| `docs/` | diagrams for this README |
 | `tools/licenses.py` | dependency license check |
 
 ## Building

@@ -1,0 +1,275 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:lang="en" width="960" height="1464" viewBox="0 0 960 1464">
+  <title>Password storage, exchange and encryption in InkVault</title>
+  <desc>Key hierarchy from the master password to record ciphertext, ciphertext and AAD format, data on the device, in PEP nodes and in the export file, sync of two devices through an XMPP server and record merge by HLC timestamps.</desc>
+  <style>
+    :root {
+      --bg: #ffffff; --panel: #f6f8fa; --card: #ffffff; --line: #d1d9e0;
+      --fg: #1f2328; --muted: #59636e; --arrow: #6e7781; --net: #0969da;
+      --sec: #fdf0e1; --sec-line: #cf6a12;
+      --enc: #e2f4e7; --enc-line: #2b8a48;
+      --open: #edf0f4; --open-line: #8c959f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117; --panel: #151b23; --card: #0d1117; --line: #3d444d;
+        --fg: #e6edf3; --muted: #9198a1; --arrow: #8b949e; --net: #4493f8;
+        --sec: #3b2611; --sec-line: #e08a3c;
+        --enc: #0f2e1b; --enc-line: #45b464;
+        --open: #212830; --open-line: #7d8590;
+      }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; font-size: 13px; fill: var(--fg); }
+    .m { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 12px; }
+    .h1 { font-size: 22px; font-weight: 700; }
+    .h2 { font-size: 16px; font-weight: 700; }
+    .h3 { font-size: 14px; font-weight: 600; }
+    .b { font-weight: 600; }
+    .s { font-size: 12px; fill: var(--muted); }
+    .lead { font-size: 14px; fill: var(--muted); }
+    .c { text-anchor: middle; }
+    .e { text-anchor: end; }
+    .bg { fill: var(--bg); stroke: var(--line); }
+    .panel { fill: var(--panel); stroke: var(--line); }
+    .card { fill: var(--card); stroke: var(--line); }
+    .sec { fill: var(--sec); stroke: var(--sec-line); }
+    .enc { fill: var(--enc); stroke: var(--enc-line); }
+    .open { fill: var(--open); stroke: var(--open-line); }
+    .edge { fill: none; stroke: var(--arrow); stroke-width: 1.5; }
+    .net { fill: none; stroke: var(--net); stroke-width: 1.6; }
+    .life { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 4 4; }
+    .sep { stroke: var(--line); }
+    .ah { fill: var(--arrow); }
+    .ahn { fill: var(--net); }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="ah" d="M0 0L10 5L0 10z"/>
+    </marker>
+    <marker id="n" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="ahn" d="M0 0L10 5L0 10z"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0.5" y="0.5" width="959" height="1463" rx="12"/>
+
+  <text class="h1" x="32" y="46">Password storage, exchange and encryption in InkVault</text>
+  <text class="lead" x="32" y="72">Encryption and decryption happen only on the device. The server stores ciphertext and wrapped keys.</text>
+
+  <rect class="sec" x="32.5" y="101.5" width="14" height="14" rx="3"/>
+  <text x="54" y="113">secret, exists only on the device</text>
+  <rect class="enc" x="306.5" y="101.5" width="14" height="14" rx="3"/>
+  <text x="328" y="113">encrypted or wrapped</text>
+  <rect class="open" x="526.5" y="101.5" width="14" height="14" rx="3"/>
+  <text x="548" y="113">public data</text>
+  <path class="net" d="M676 108.5H708" marker-end="url(#n)"/>
+  <text x="718" y="113">XMPP transfer</text>
+
+  <!-- Шифрование -->
+  <rect class="panel" x="16.5" y="136.5" width="927" height="564" rx="10"/>
+  <text x="32" y="166"><tspan class="h2">Encryption</tspan><tspan class="s" dx="10">key hierarchy and ciphertext format</tspan></text>
+
+  <rect class="sec" x="32.5" y="186.5" width="270" height="48" rx="8"/>
+  <text class="h3" x="46" y="207">master password</text>
+  <text class="s" x="46" y="225">typed by the user, never stored</text>
+  <path class="edge" d="M56 235V275" marker-end="url(#a)"/>
+  <text x="72" y="252"><tspan class="b">Argon2id</tspan>: 64 MiB memory, 3 iterations, 4 lanes</text>
+  <text class="s" x="72" y="268">16-byte salt and parameters come from the account</text>
+
+  <rect class="sec" x="32.5" y="276.5" width="270" height="48" rx="8"/>
+  <text class="h3" x="46" y="297">master key · 32 B</text>
+  <text class="s" x="46" y="315">in memory only</text>
+  <path class="edge" d="M56 325V365" marker-end="url(#a)"/>
+  <text x="72" y="350"><tspan class="b">HKDF-SHA256</tspan>, info <tspan class="m">inkvault:v1:wrap</tspan></text>
+
+  <rect class="sec" x="32.5" y="366.5" width="270" height="48" rx="8"/>
+  <text class="h3" x="46" y="387">wrapping key · 32 B</text>
+  <text class="s" x="46" y="405">in memory only</text>
+  <path class="edge" d="M56 415V455" marker-end="url(#a)"/>
+  <text x="72" y="432">unwraps <tspan class="m">user_key</tspan></text>
+  <text class="s" x="72" y="448">wrong password - tag check fails</text>
+
+  <rect class="sec" x="32.5" y="456.5" width="270" height="48" rx="8"/>
+  <text class="h3" x="46" y="477">user key · 32 B</text>
+  <text class="s" x="46" y="495">random, kept when the password changes</text>
+  <path class="edge" d="M56 505V545" marker-end="url(#a)"/>
+  <text x="72" y="522">unwraps <tspan class="m">vaults[].key</tspan></text>
+  <text class="s" x="72" y="538">label <tspan class="m">vault-key:&lt;id&gt;:&lt;key version&gt;</tspan></text>
+
+  <rect class="sec" x="32.5" y="546.5" width="270" height="48" rx="8"/>
+  <text class="h3" x="46" y="567">vault key · 32 B</text>
+  <text class="s" x="46" y="585">random, one per vault</text>
+  <path class="edge" d="M56 595V635" marker-end="url(#a)"/>
+  <text x="72" y="612"><tspan class="b">XChaCha20-Poly1305</tspan></text>
+  <text class="s" x="72" y="628">24-byte nonce, AAD: vault, record, key version</text>
+
+  <rect class="enc" x="32.5" y="636.5" width="270" height="48" rx="8"/>
+  <text class="h3" x="46" y="657">record ciphertext</text>
+  <text class="s" x="46" y="675">fields, tags, trash, password history</text>
+
+  <text class="h3" x="500" y="200">Ciphertext format</text>
+  <rect class="open" x="500.5" y="212.5" width="37" height="33" rx="4"/>
+  <rect class="open" x="540.5" y="212.5" width="37" height="33" rx="4"/>
+  <rect class="open" x="580.5" y="212.5" width="117" height="33" rx="4"/>
+  <rect class="enc" x="700.5" y="212.5" width="147" height="33" rx="4"/>
+  <rect class="enc" x="850.5" y="212.5" width="77" height="33" rx="4"/>
+  <text class="m c" x="519" y="233">01</text>
+  <text class="m c" x="559" y="233">01</text>
+  <text class="c" x="639" y="233">nonce · 24 B</text>
+  <text class="c" x="774" y="233">ciphertext · n B</text>
+  <text class="c" x="889" y="233">tag · 16 B</text>
+  <text class="s" x="500" y="264"><tspan class="m">01 01</tspan> - format version and algorithm XChaCha20-Poly1305</text>
+  <text class="s" x="500" y="280">random nonce for every encryption, Poly1305 tag</text>
+
+  <text class="h3" x="500" y="316">AAD: what the ciphertext is bound to</text>
+  <rect class="open" x="500.5" y="328.5" width="49" height="33" rx="4"/>
+  <rect class="open" x="552.5" y="328.5" width="109" height="33" rx="4"/>
+  <rect class="open" x="664.5" y="328.5" width="79" height="33" rx="4"/>
+  <rect class="open" x="746.5" y="328.5" width="73" height="33" rx="4"/>
+  <rect class="open" x="822.5" y="328.5" width="105" height="33" rx="4"/>
+  <text class="m c" x="525" y="349">01 01</text>
+  <text class="m c" x="607" y="349">inkvault:item</text>
+  <text class="m c" x="704" y="349">vault_id</text>
+  <text class="m c" x="783" y="349">item_id</text>
+  <text class="c" x="875" y="349">key version</text>
+  <text class="s" x="500" y="380">The server cannot move a record to another vault</text>
+  <text class="s" x="500" y="396">or another id: the tag check fails and decryption is rejected.</text>
+
+  <text x="500" y="432"><tspan class="h3">Other keys</tspan><tspan class="s" dx="8">HKDF-SHA256, info <tspan class="m">inkvault:v1:&lt;label&gt;</tspan></tspan></text>
+  <rect class="open" x="500.5" y="446.5" width="427" height="50" rx="8"/>
+  <text class="b" x="514" y="466">key_id · 16 B</text>
+  <text class="s" x="514" y="484">from user key, <tspan class="m">key-id</tspan>: fingerprint, own or foreign account</text>
+  <rect class="sec" x="500.5" y="506.5" width="427" height="50" rx="8"/>
+  <text class="b" x="514" y="526">cache key · 32 B</text>
+  <text class="s" x="514" y="544">from vault key, <tspan class="m">cache</tspan>: encrypts the local record cache</text>
+  <rect class="sec" x="500.5" y="566.5" width="427" height="50" rx="8"/>
+  <text class="b" x="514" y="586">export key · 32 B</text>
+  <text class="s" x="514" y="604">Argon2id from the export password, new salt, then <tspan class="m">export</tspan></text>
+  <rect class="sec" x="500.5" y="626.5" width="427" height="50" rx="8"/>
+  <text class="b" x="514" y="646">device secret · 32 B</text>
+  <text class="s" x="514" y="664">wraps user key, label <tspan class="m">device-key</tspan>: unlock without master password</text>
+
+  <!-- Хранение -->
+  <rect class="panel" x="16.5" y="716.5" width="927" height="362" rx="10"/>
+  <text x="32" y="746"><tspan class="h2">Storage</tspan><tspan class="s" dx="10">what is kept on the device, on the server and in the export file</tspan></text>
+
+  <rect class="card" x="32.5" y="762.5" width="270" height="300" rx="8"/>
+  <text class="h3" x="46" y="786">Device</text>
+  <text class="s" x="46" y="804">clients: web, Android, terminal</text>
+  <rect class="sec" x="44.5" y="820.5" width="246" height="48" rx="6"/>
+  <text class="b" x="58" y="840">user key and vault keys</text>
+  <text class="s" x="58" y="857">in memory only, while unlocked</text>
+  <rect class="enc" x="44.5" y="878.5" width="246" height="48" rx="6"/>
+  <text class="b" x="58" y="898">account copy</text>
+  <text class="s" x="58" y="915">for offline unlock</text>
+  <rect class="enc" x="44.5" y="936.5" width="246" height="48" rx="6"/>
+  <text class="b" x="58" y="956">record cache</text>
+  <text class="s" x="58" y="973">encrypted with the cache key</text>
+  <rect class="sec" x="44.5" y="994.5" width="246" height="48" rx="6"/>
+  <text class="b" x="58" y="1014">quick unlock</text>
+  <text class="s" x="58" y="1031">secret and <tspan class="m">device-key</tspan> wrap</text>
+
+  <rect class="card" x="318.5" y="762.5" width="380" height="300" rx="8"/>
+  <text class="h3" x="332" y="786">XMPP server, PEP nodes</text>
+  <text class="s" x="332" y="804"><tspan class="m">access_model whitelist</tspan>, <tspan class="m">persist_items true</tspan></text>
+
+  <rect class="panel" x="330.5" y="818.5" width="356" height="114" rx="6"/>
+  <text x="344" y="840"><tspan class="m b">urn:inkvault:account:0</tspan><tspan class="s" dx="6">single item current</tspan></text>
+  <rect class="open" x="344.5" y="852.5" width="10" height="10" rx="2"/>
+  <text x="362" y="862"><tspan class="m">v, key_id, rev</tspan><tspan class="s" dx="8">version, fingerprint, revision</tspan></text>
+  <rect class="open" x="344.5" y="872.5" width="10" height="10" rx="2"/>
+  <text x="362" y="882"><tspan class="m">kdf</tspan><tspan class="s" dx="8">algorithm, parameters, salt</tspan></text>
+  <rect class="enc" x="344.5" y="892.5" width="10" height="10" rx="2"/>
+  <text x="362" y="902"><tspan class="m">user_key</tspan><tspan class="s" dx="8">user key wrapped as user-key</tspan></text>
+  <rect class="enc" x="344.5" y="912.5" width="10" height="10" rx="2"/>
+  <text x="362" y="922"><tspan class="m">vaults[]</tspan><tspan class="s" dx="8">id, key_version, wrapped vault key</tspan></text>
+
+  <rect class="panel" x="330.5" y="942.5" width="356" height="108" rx="6"/>
+  <text x="344" y="964"><tspan class="m b">urn:inkvault:vault:0</tspan><tspan class="s" dx="6">default limit 256</tspan></text>
+  <text class="m s" x="344" y="988">&lt;item id="UUIDv7"&gt;</text>
+  <text class="s" x="530" y="988">record id</text>
+  <text class="m s" x="358" y="1008">&lt;entry v="1" key="1"&gt;</text>
+  <text class="s" x="530" y="1008">key - key version</text>
+  <rect class="enc" x="366.5" y="1016.5" width="142" height="20" rx="4"/>
+  <text class="m" x="372" y="1031">base64(ciphertext)</text>
+  <text class="m s" x="514" y="1031">&lt;/entry&gt;&lt;/item&gt;</text>
+
+  <rect class="card" x="714.5" y="762.5" width="214" height="300" rx="8"/>
+  <text class="h3" x="728" y="786">Export file</text>
+  <text class="s" x="728" y="804">inkvault-export, up to 64 MiB</text>
+  <rect class="open" x="726.5" y="820.5" width="190" height="48" rx="6"/>
+  <text class="m b" x="740" y="840">kdf</text>
+  <text class="s" x="740" y="857">new salt, parameters</text>
+  <rect class="enc" x="726.5" y="878.5" width="190" height="48" rx="6"/>
+  <text class="m b" x="740" y="898">data</text>
+  <text class="s" x="740" y="915">all records and history</text>
+  <text class="s" x="728" y="952">The file has no keys</text>
+  <text class="s" x="728" y="969">and no account. It opens</text>
+  <text class="s" x="728" y="986">only with the export password.</text>
+  <text class="s" x="728" y="1010">Import merges by HLC</text>
+  <text class="s" x="728" y="1027">into any vault.</text>
+
+  <!-- Обмен -->
+  <rect class="panel" x="16.5" y="1094.5" width="927" height="354" rx="10"/>
+  <text x="32" y="1124"><tspan class="h2">Exchange</tspan><tspan class="s" dx="10">sync over PEP, clients resolve conflicts</tspan></text>
+
+  <path class="life" d="M112 1176V1428M322 1176V1428M532 1176V1428"/>
+  <rect class="card" x="42.5" y="1142.5" width="140" height="34" rx="6"/>
+  <text class="b c" x="112" y="1164">Device A</text>
+  <rect class="card" x="242.5" y="1142.5" width="160" height="34" rx="6"/>
+  <text class="b c" x="322" y="1164">XMPP server</text>
+  <rect class="card" x="462.5" y="1142.5" width="140" height="34" rx="6"/>
+  <text class="b c" x="532" y="1164">Device B</text>
+
+  <rect class="card" x="32.5" y="1190.5" width="160" height="42" rx="6"/>
+  <text class="c" x="112" y="1207">HLC timestamp</text>
+  <text class="c" x="112" y="1223">and record encryption</text>
+
+  <path class="net" d="M112 1258H321" marker-end="url(#n)"/>
+  <text class="c" x="217" y="1250"><tspan class="m">publish</tspan> the whole record</text>
+  <path class="net" d="M322 1294H531" marker-end="url(#n)"/>
+  <text class="c" x="427" y="1286">PEP notification</text>
+
+  <rect class="card" x="242.5" y="1306.5" width="160" height="42" rx="6"/>
+  <text class="c" x="322" y="1323">keeps the latest</text>
+  <text class="c" x="322" y="1339">publication</text>
+  <rect class="card" x="452.5" y="1306.5" width="160" height="42" rx="6"/>
+  <text class="c" x="532" y="1323">check from,</text>
+  <text class="c" x="532" y="1339">merge by HLC</text>
+
+  <path class="net" d="M532 1376H323" marker-end="url(#n)"/>
+  <text class="c" x="427" y="1368"><tspan class="m">publish</tspan> the merge result</text>
+  <text class="s c" x="427" y="1392">if it has new edits</text>
+  <path class="net" d="M322 1412H113" marker-end="url(#n)"/>
+  <text class="c" x="217" y="1404">PEP notification</text>
+
+  <rect class="card" x="624.5" y="1142.5" width="304" height="132" rx="8"/>
+  <text x="638" y="1164"><tspan class="b">New session</tspan><tspan class="s" dx="6">or sign-in after being offline</tspan></text>
+  <text class="s" x="638" y="1188">1</text>
+  <text x="654" y="1188">account check by <tspan class="m">key_id</tspan></text>
+  <text class="s" x="638" y="1206">2</text>
+  <text x="654" y="1206"><tspan class="m">fetch_config</tspan> - node limit</text>
+  <text class="s" x="638" y="1224">3</text>
+  <text x="654" y="1224"><tspan class="m">fetch_all</tspan> - all node items</text>
+  <text class="s" x="638" y="1242">4</text>
+  <text x="654" y="1242">merge with the local cache</text>
+  <text class="s" x="638" y="1262">Nothing is published until the load ends.</text>
+
+  <rect class="card" x="624.5" y="1286.5" width="304" height="146" rx="8"/>
+  <text x="638" y="1308"><tspan class="b">Merge</tspan><tspan class="s" dx="6">each field by HLC timestamp</tspan></text>
+  <text class="s" x="638" y="1334">A</text>
+  <text class="m" x="656" y="1334">password</text>
+  <text class="m" x="728" y="1334">Xk7#pQ2v</text>
+  <text class="m s e" x="914" y="1334">HLC …3d4e</text>
+  <text class="s" x="638" y="1354">B</text>
+  <text class="m" x="656" y="1354">password</text>
+  <text class="m" x="728" y="1354">q9!Lm2#w</text>
+  <text class="m e b" x="914" y="1354">HLC …4f10</text>
+  <path class="sep" d="M638 1366.5H914"/>
+  <text class="s" x="638" y="1388">=</text>
+  <text class="m" x="656" y="1388">password</text>
+  <text class="m b" x="728" y="1388">q9!Lm2#w</text>
+  <text class="s e" x="914" y="1388">larger timestamp</text>
+  <text class="m" x="656" y="1408">history</text>
+  <text class="m" x="728" y="1408">Xk7#pQ2v</text>
+  <text class="s e" x="914" y="1408">up to 32 versions</text>
+</svg>
